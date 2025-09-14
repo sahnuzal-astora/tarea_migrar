@@ -12,8 +12,7 @@ class Producto(Base):
     disponible = Column(Boolean, default=True)
 
     # Relación con Usuario (quién lo tiene prestado)
-    usuario_id = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=True)
-    usuario = relationship("Usuario", back_populates="productos")
+    prestamos = relationship("Prestamo", back_populates="producto")
 
     # Relaciones con categorías
     libro = relationship("Libro", back_populates="producto", uselist=False)
