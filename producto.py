@@ -14,6 +14,22 @@ class Producto(Base):
     # Relación con Usuario (quién lo tiene prestado)
     prestamos = relationship("Prestamo", back_populates="producto")
 
+# Campos de auditoría
+    id_usuario_crea = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=False)
+    id_usuario_edita = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=True)
+
+    # Relación con productos (una categoría puede tener muchos productos)
+    productos = relationship("Producto", back_populates="categoria")
+
+    # Relaciones de auditoría
+    usuario_crea = relationship(
+        "Usuario", foreign_keys=[id_usuario_crea], overlaps="usuario_edita"
+    )
+    usuario_edita = relationship(
+        "Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario_crea"
+    )
+
+    
     # Relaciones con categorías
     libro = relationship("Libro", back_populates="producto", uselist=False)
     revista = relationship("Revista", back_populates="producto", uselist=False)
