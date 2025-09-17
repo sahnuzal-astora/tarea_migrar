@@ -19,8 +19,8 @@ class Prestamo(Base):
         unique=True,
         nullable=False,
     )
-    usuario_id = Column(UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False)
-    producto_id = Column(UUID(as_uuid=True), ForeignKey("productos.id_producto"), nullable=False)
+    usuario_id = Column(ForeignKey("usuarios.id_usuario"), nullable=False)
+    producto_id = Column(ForeignKey("productos.id_producto"), nullable=False)
 
     # Relaciones
     usuario = relationship(
@@ -31,8 +31,8 @@ class Prestamo(Base):
     )
 
     # campos autoria
-    id_usuario_crea = Column(UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False)
-    id_usuario_edita = Column(UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=True)
+    id_usuario_crea = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=False)
+    id_usuario_edita = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=True)
 
     # Relaciones de auditoría
     usuario_crea = relationship(
