@@ -1,7 +1,10 @@
-from database.config import Base
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Float
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
+from database.config import Base
+
+
 class Producto(Base):
     __tablename__ = "productos"
 
@@ -11,15 +14,9 @@ class Producto(Base):
     anio = Column(Integer, nullable=False)
     disponible = Column(Boolean, default=True)
 
-    # Relación con Usuario (quién lo tiene prestado)
-    prestamos = relationship("Prestamo", back_populates="producto")
-
-# Campos de auditoría
+    # Campos de auditoría
     id_usuario_crea = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=False)
     id_usuario_edita = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=True)
-
-    # Relación con productos (una categoría puede tener muchos productos)
-    productos = relationship("Producto", back_populates="categoria")
 
     # Relaciones de auditoría
     usuario_crea = relationship(
@@ -29,7 +26,9 @@ class Producto(Base):
         "Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario_crea"
     )
 
-    
+    # Relación con préstamos
+    prestamos = relationship("Prestamo", back_populates="producto", lazy="dynamic")
+
     # Relaciones con categorías
     libro = relationship("Libro", back_populates="producto", uselist=False)
     revista = relationship("Revista", back_populates="producto", uselist=False)

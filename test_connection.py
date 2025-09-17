@@ -4,8 +4,9 @@ Script para probar la conexión a PostgreSQL (Neon)
 
 import sys
 
-from database.config import DATABASE_URL, engine
 from sqlalchemy import text
+
+from database.config import DATABASE_URL, engine
 
 
 def test_connection():
@@ -68,6 +69,8 @@ def test_tables():
     print("\n=== PROBANDO CREACION DE TABLAS ===\n")
 
     try:
+        # Importar todos los modelos para que se registren
+        import models
         from database.config import create_tables
 
         create_tables()
@@ -86,7 +89,7 @@ def create_admin_user():
 
     try:
         from database.config import SessionLocal
-        from usuario import Usuario
+        from models import Usuario
 
         db = SessionLocal()
 

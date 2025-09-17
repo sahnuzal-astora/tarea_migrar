@@ -1,25 +1,36 @@
 import uuid
-from database.config import Base
+from typing import Any
+
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from typing import Any
+from database.config import Base
 
 
 class Prestamo(Base):
     __tablename__ = "prestamos"
 
-    id_prestamo = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    id_prestamo = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
     usuario_id = Column(ForeignKey("usuarios.id_usuario"), nullable=False)
     producto_id = Column(ForeignKey("productos.id_producto"), nullable=False)
 
     # Relaciones
-    usuario = relationship("Usuario", back_populates="prestamos")
-    producto = relationship("Producto", back_populates="prestamos")
+    usuario = relationship(
+        "Usuario", foreign_keys=[usuario_id], back_populates="prestamos"
+    )
+    producto = relationship(
+        "Producto", foreign_keys=[producto_id], back_populates="prestamos"
+    )
 
-    #campos autoria
+    # campos autoria
     id_usuario_crea = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=False)
     id_usuario_edita = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=True)
 

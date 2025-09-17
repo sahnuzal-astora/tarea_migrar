@@ -1,7 +1,9 @@
-from database.config import Base
-from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Float
+from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
+from database.config import Base
+
 
 # ====================== USUARIO ======================
 class Usuario(Base):
@@ -18,7 +20,12 @@ class Usuario(Base):
     fecha_edicion = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relación con productos (un usuario puede tener muchos materiales prestados)
-    prestamos = relationship("Prestamo", back_populates="usuario")
+    prestamos = relationship(
+        "Prestamo",
+        foreign_keys="Prestamo.usuario_id",
+        back_populates="usuario",
+        lazy="dynamic",
+    )
 
     def __repr__(self):
         return f"<Usuario(id_usuario={self.id_usuario}, nombre='{self.nombre}', email='{self.email}')>"
