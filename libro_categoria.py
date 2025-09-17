@@ -1,19 +1,15 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean, Float, ForeignKey
+from database.config import Base
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
-from pydantic import BaseModel, Field, validator
-from datetime import datetime
-from typing import Optional, List
+from sqlalchemy.sql import func
 
-from ..database.database import Base
+class Libro(Base):
+    __tablename__ = "libros"
 
-class libro_categoria(Base):
-    __tablename__ = "categoria_libros"
-
-    id_libro = Column(Integer, primary_key=True, autoincrement=True)
-    producto_id = Column(Integer, ForeignKey("productos.id"), unique=True, nullable=False)
+    id_libro = Column(Integer, primary_key=True, index=True)
     genero = Column(String(100), nullable=False)
     paginas = Column(Integer, nullable=False)
+    producto_id = Column(Integer, ForeignKey("productos.id_producto"))
 
-    # Relación inversa
-    producto = relationship("Producto", back_populates="libro_categoria")
+    producto = relationship("Producto", back_populates="libro")
 
