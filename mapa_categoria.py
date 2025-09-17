@@ -1,18 +1,15 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean, Float, ForeignKey
+from database.config import Base
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
-from pydantic import BaseModel, Field, validator
-from datetime import datetime
-from typing import Optional, List
+from sqlalchemy.sql import func
+class Mapa(Base):
+    __tablename__ = "mapas"
 
-from ..database.database import Base
+    id_mapa = Column(Integer, primary_key=True, index=True)
+    region = Column(String(100), nullable=False)
+    escala = Column(String(50), nullable=False)
+    tipo = Column(String(50), nullable=False)
 
-class mapa_categoria(Base):
-    __tablename__ = "categoria_mapas"
+    producto_id = Column(Integer, ForeignKey("productos.id_producto"))
+    producto = relationship("Producto", back_populates="mapa")
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    producto_id = Column(Integer, ForeignKey("productos.id"), unique=True, nullable=False)
-    region = Column(String(200), nullable=False)
-    escala = Column(String(50), nullable=False)  # Ej: 1:50,000
-    tipo = Column(String(100), nullable=False)  # Ej: Político, Topográfico, Histórico
-
-    producto = relationship("Producto", back_populates="mapa_categoria")
