@@ -1,18 +1,15 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, Boolean, Float, ForeignKey
+from database.config import Base
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
-from pydantic import BaseModel, Field, validator
-from datetime import datetime
-from typing import Optional, List
+from sqlalchemy.sql import func
 
-from ..database.database import Base
+class Audiolibro(Base):
+    __tablename__ = "audiolibros"
 
-class audiolibro_categoria(Base):
-    __tablename__ = "categoria_audiolibros"
+    id_audiolibro = Column(Integer, primary_key=True, index=True)
+    narrador = Column(String(100), nullable=False)
+    duracion = Column(Float, nullable=False)
+    formato = Column(String(20), nullable=False)
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    producto_id = Column(Integer, ForeignKey("productos.id"), unique=True, nullable=False)
-    narrador = Column(String(150), nullable=False)
-    duracion_minutos = Column(Integer, nullable=False)
-    formato = Column(String(50), nullable=False)  # mp3, wav, flac
-
-    producto = relationship("Producto", back_populates="audiolibro_categoria")
+    producto_id = Column(Integer, ForeignKey("productos.id_producto"))
+    producto = relationship("Producto", back_populates="audiolibro")
