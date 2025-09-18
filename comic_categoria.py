@@ -13,6 +13,13 @@ class Comic(Base):
     ilustrador = Column(String(100), nullable=False)
     editorial = Column(String(100), nullable=False)
     volumen = Column(String(50), nullable=False)
-
     producto_id = Column(UUID(as_uuid=True), ForeignKey("productos.id_producto"))
     producto = relationship("Producto", back_populates="comic")
+
+    
+    id_usuario_crea = Column(UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False)
+    id_usuario_edita = Column(UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=True)
+
+    
+    usuario_crea = relationship("Usuario", foreign_keys=[id_usuario_crea], overlaps="usuario_edita,producto")
+    usuario_edita = relationship("Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario_crea,producto")

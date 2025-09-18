@@ -13,5 +13,20 @@ class Libro(Base):
     genero = Column(String(100), nullable=False)
     paginas = Column(Integer, nullable=False)
     producto_id = Column(UUID(as_uuid=True), ForeignKey("productos.id_producto"))
-
     producto = relationship("Producto", back_populates="libro")
+
+    
+    id_usuario_crea = Column(
+        UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False
+    )
+    id_usuario_edita = Column(
+        UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=True
+    )
+
+    
+    usuario_crea = relationship(
+        "Usuario", foreign_keys=[id_usuario_crea], overlaps="usuario_edita,producto"
+    )
+    usuario_edita = relationship(
+        "Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario_crea,producto"
+    )
