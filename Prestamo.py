@@ -1,12 +1,9 @@
 import uuid
-from typing import Any
-
-from sqlalchemy import Column, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+from sqlalchemy.orm import declarative_base, relationship
 
-from database.config import Base
+Base = declarative_base()
 
 
 class Prestamo(Base):
@@ -19,28 +16,11 @@ class Prestamo(Base):
         unique=True,
         nullable=False,
     )
-    usuario_id = Column(ForeignKey("usuarios.id_usuario"), nullable=False)
-    producto_id = Column(ForeignKey("productos.id_producto"), nullable=False)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False)
+    producto_id = Column(UUID(as_uuid=True), ForeignKey("productos.id_producto"), nullable=False)
 
-    # Relaciones
-    usuario = relationship(
-        "Usuario", foreign_keys=[usuario_id], back_populates="prestamos"
-    )
-    producto = relationship(
-        "Producto", foreign_keys=[producto_id], back_populates="prestamos"
-    )
-
-    # campos autoria
-    id_usuario_crea = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=False)
-    id_usuario_edita = Column(Integer, ForeignKey("usuarios.id_usuario"), nullable=True)
-
-    # Relaciones de auditoría
-    usuario_crea = relationship(
-        "Usuario", foreign_keys=[id_usuario_crea], overlaps="usuario,usuario_edita"
-    )
-    usuario_edita = relationship(
-        "Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario,usuario_crea"
-    )
+    # Relación inversa con Usuario
+    usuario = relationship("Usuario", back_populates="prestamos")
 
     def __repr__(self):
         return f"<Prestamo(id_prestamo={self.id_prestamo}, usuario_id={self.usuario_id}, producto_id={self.producto_id})>"
