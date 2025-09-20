@@ -19,9 +19,9 @@ class ProductoCRUD:
         titulo: str,
         autor: str,
         anio: int,
-        disponible: bool,
         id_usuario_crea: UUID,
         id_usuario_edita: UUID = None,
+        disponible: bool = True,
     ) -> Producto:
         if not titulo or len(titulo.strip()) == 0:
             raise ValueError("El título del producto es obligatorio")

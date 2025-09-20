@@ -8,11 +8,19 @@ from sqlalchemy.orm import Session
 from mapa_categoria import Mapa
 from usuario import Usuario
 
+
 class MapaCRUD:
     def __init__(self, db: Session):
         self.db = db
 
-    def crear_mapa(self, region: str, escala: str, tipo: str, producto_id: UUID, id_usuario_crea: UUID = None) -> Mapa:
+    def crear_mapa(
+        self,
+        region: str,
+        escala: str,
+        tipo: str,
+        producto_id: UUID,
+        id_usuario_crea: UUID = None,
+    ) -> Mapa:
         if not region or len(region.strip()) == 0:
             raise ValueError("La región es obligatoria")
         if len(region) > 100:
@@ -28,7 +36,9 @@ class MapaCRUD:
         if id_usuario_crea is None:
             admin = self.db.query(Usuario).filter(Usuario.es_admin == True).first()
             if not admin:
-                raise ValueError("No se encontró un usuario administrador para crear el mapa")
+                raise ValueError(
+                    "No se encontró un usuario administrador para crear el mapa"
+                )
             id_usuario_crea = admin.id_usuario
         mapa = Mapa(
             region=region.strip(),
@@ -48,7 +58,9 @@ class MapaCRUD:
     def obtener_mapas(self, skip: int = 0, limit: int = 100) -> List[Mapa]:
         return self.db.query(Mapa).offset(skip).limit(limit).all()
 
-    def actualizar_mapa(self, mapa_id: UUID, id_usuario_edita: UUID = None, **kwargs) -> Optional[Mapa]:
+    def actualizar_mapa(
+        self, mapa_id: UUID, id_usuario_edita: UUID = None, **kwargs
+    ) -> Optional[Mapa]:
         mapa = self.obtener_mapa(mapa_id)
         if not mapa:
             return None
@@ -76,7 +88,9 @@ class MapaCRUD:
         if id_usuario_edita is None:
             admin = self.db.query(Usuario).filter(Usuario.es_admin == True).first()
             if not admin:
-                raise ValueError("No se encontró un usuario administrador para editar el mapa")
+                raise ValueError(
+                    "No se encontró un usuario administrador para editar el mapa"
+                )
             id_usuario_edita = admin.id_usuario
         mapa.id_usuario_edita = id_usuario_edita
         for key, value in kwargs.items():

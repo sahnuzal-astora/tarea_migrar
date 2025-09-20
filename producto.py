@@ -23,15 +23,12 @@ class Producto(Base):
     anio = Column(Integer, nullable=False)
     disponible = Column(Boolean, default=True)
 
-    
     id_usuario_crea = Column(
         UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=False
     )
     id_usuario_edita = Column(
         UUID(as_uuid=True), ForeignKey("usuarios.id_usuario"), nullable=True
     )
-
-   
     usuario_crea = relationship(
         "Usuario", foreign_keys=[id_usuario_crea], overlaps="usuario_edita,producto"
     )
@@ -39,14 +36,12 @@ class Producto(Base):
         "Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario_crea,producto"
     )
 
-    
     prestamos = relationship("Prestamo", back_populates="producto", lazy="dynamic")
 
-    
-    libro = relationship("Libro", back_populates="producto", uselist=False)
-    revista = relationship("Revista", back_populates="producto", uselist=False)
-    periodico = relationship("Periodico", back_populates="producto", uselist=False)
-    audiolibro = relationship("Audiolibro", back_populates="producto", uselist=False)
+    libro = relationship("Libro", back_populates="producto")
+    revista = relationship("Revista", back_populates="producto")
+    periodico = relationship("Periodico", back_populates="producto")
+    audiolibro = relationship("Audiolibro", back_populates="producto")
     comic = relationship("Comic", back_populates="producto", uselist=False)
     mapa = relationship("Mapa", back_populates="producto", uselist=False)
     tesis = relationship("Tesis", back_populates="producto", uselist=False)

@@ -23,12 +23,14 @@ class Usuario(Base):
     telefono = Column(String(20), nullable=True)
     activo = Column(Boolean, default=True)
     es_admin = Column(Boolean, default=False)
+    contrasena_hash = Column(String(255), nullable=False)
     fecha_creacion = Column(DateTime(timezone=True), server_default=func.now())
     fecha_edicion = Column(DateTime(timezone=True), onupdate=func.now())
+
     prestamos = relationship(
         "Prestamo",
-        foreign_keys="Prestamo.usuario_id",
         back_populates="usuario",
+        foreign_keys="[Prestamo.usuario_id]",
         lazy="dynamic",
     )
 

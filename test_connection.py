@@ -16,16 +16,14 @@ def test_connection():
     print()
 
     try:
-        
+
         with engine.connect() as connection:
             print("[OK] Conexion exitosa a PostgreSQL!")
 
-            
             result = connection.execute(text("SELECT version() as version"))
             version = result.fetchone()
             print(f"[OK] Version de PostgreSQL: {version[0]}")
 
-            
             result = connection.execute(
                 text(
                     "SELECT datname FROM pg_database WHERE datname = current_database()"
@@ -38,7 +36,6 @@ def test_connection():
             else:
                 print("[WARNING] No se pudo verificar la base de datos actual")
 
-            
             print("\nTablas disponibles:")
             result = connection.execute(
                 text(
@@ -69,7 +66,7 @@ def test_tables():
     print("\n=== PROBANDO CREACION DE TABLAS ===\n")
 
     try:
-        
+
         import models
         from database.config import create_tables
 
@@ -93,7 +90,6 @@ def create_admin_user():
 
         db = SessionLocal()
 
-        
         admin_exists = db.query(Usuario).filter(Usuario.es_admin == True).first()
 
         if admin_exists:
@@ -101,7 +97,6 @@ def create_admin_user():
             db.close()
             return True
 
-        
         admin_user = Usuario(
             nombre="Administrador",
             email="admin@system.com",
@@ -130,13 +125,12 @@ def create_admin_user():
 if __name__ == "__main__":
     print("Iniciando prueba de conexion...\n")
 
-    
     if test_connection():
         print("\n" + "=" * 50)
-        
+
         if test_tables():
             print("\n" + "=" * 50)
-            
+
             create_admin_user()
 
         print("\n[SUCCESS] Configuracion completada!")

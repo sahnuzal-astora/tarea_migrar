@@ -4,11 +4,14 @@ from sqlalchemy.orm import Session
 from revista_categoria import Revista
 from usuario import Usuario
 
+
 class RevistaCRUD:
     def __init__(self, db: Session):
         self.db = db
 
-    def crear_revista(self, edicion: str, producto_id: UUID, id_usuario_crea: UUID = None) -> Revista:
+    def crear_revista(
+        self, edicion: str, producto_id: UUID, id_usuario_crea: UUID = None
+    ) -> Revista:
         if not edicion or len(edicion.strip()) == 0:
             raise ValueError("La edición es obligatoria")
         if len(edicion) > 50:
@@ -16,7 +19,9 @@ class RevistaCRUD:
         if id_usuario_crea is None:
             admin = self.db.query(Usuario).filter(Usuario.es_admin == True).first()
             if not admin:
-                raise ValueError("No se encontró un usuario administrador para crear la revista")
+                raise ValueError(
+                    "No se encontró un usuario administrador para crear la revista"
+                )
             id_usuario_crea = admin.id_usuario
         revista = Revista(
             edicion=edicion.strip(),
@@ -34,7 +39,9 @@ class RevistaCRUD:
     def obtener_revistas(self, skip: int = 0, limit: int = 100) -> List[Revista]:
         return self.db.query(Revista).offset(skip).limit(limit).all()
 
-    def actualizar_revista(self, revista_id: UUID, id_usuario_edita: UUID = None, **kwargs) -> Optional[Revista]:
+    def actualizar_revista(
+        self, revista_id: UUID, id_usuario_edita: UUID = None, **kwargs
+    ) -> Optional[Revista]:
         revista = self.obtener_revista(revista_id)
         if not revista:
             return None
@@ -48,7 +55,9 @@ class RevistaCRUD:
         if id_usuario_edita is None:
             admin = self.db.query(Usuario).filter(Usuario.es_admin == True).first()
             if not admin:
-                raise ValueError("No se encontró un usuario administrador para editar la revista")
+                raise ValueError(
+                    "No se encontró un usuario administrador para editar la revista"
+                )
             id_usuario_edita = admin.id_usuario
         revista.id_usuario_edita = id_usuario_edita
         for key, value in kwargs.items():

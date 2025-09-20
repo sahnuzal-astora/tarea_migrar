@@ -5,14 +5,14 @@ Operaciones CRUD para Usuario
 import re
 from typing import List, Optional
 from uuid import UUID
-
 from sqlalchemy.orm import Session
-from database.config import Base
 from usuario import Usuario  # Ajusta el import si tu modelo está en otro módulo
+
 
 class UsuarioCRUD:
     def __init__(self, db: Session):
         self.db = db
+        self._crear_admin_por_defecto()  # <-- inicializa el admin al instanciar
 
     def _validar_email(self, email: str) -> bool:
         pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -26,6 +26,7 @@ class UsuarioCRUD:
         self,
         nombre: str,
         email: str,
+        contrasena_hash: str,
         telefono: Optional[str] = None,
         es_admin: bool = False,
     ) -> Usuario:
@@ -33,10 +34,12 @@ class UsuarioCRUD:
             raise ValueError("El nombre es obligatorio")
         if len(nombre) > 100:
             raise ValueError("El nombre no puede exceder 100 caracteres")
+
         if not email or not self._validar_email(email):
             raise ValueError("Email inválido")
         if self.obtener_usuario_por_email(email):
             raise ValueError("El email ya está registrado")
+
         if telefono and not self._validar_telefono(telefono):
             raise ValueError("Formato de teléfono inválido")
 
@@ -45,6 +48,8 @@ class UsuarioCRUD:
             email=email.lower().strip(),
             telefono=telefono.strip() if telefono else None,
             es_admin=es_admin,
+            contrasena_hash=contrasena_hash,
+            activo=True,
         )
         self.db.add(usuario)
         self.db.commit()
@@ -96,6 +101,7 @@ class UsuarioCRUD:
         for key, value in kwargs.items():
             if hasattr(usuario, key):
                 setattr(usuario, key, value)
+
         self.db.commit()
         self.db.refresh(usuario)
         return usuario
@@ -125,24 +131,33 @@ class UsuarioCRUD:
             .first()
         )
 
-    def autenticar_usuario(self, nombre_usuario: str, contrasena: str):
-        usuario = self.obtener_usuario_por_nombre_usuario(nombre_usuario)
-        if not usuario:
-            usuario = self.obtener_usuario_por_email(nombre_usuario)
+    def autenticar_usuario(self, email: str, contrasena: str):
+        usuario = self.obtener_usuario_por_email(email)
         if not usuario or not usuario.activo:
             return None
-        # Verifica la contraseña (ajusta según tu PasswordManager)
+
         from auth.security import PasswordManager
-        if PasswordManager.verify_password(contrasena, usuario.contraseña_hash):
+
+        if PasswordManager.verify_password(contrasena, usuario.contrasena_hash):
             return usuario
         return None
 
-    def obtener_usuario_por_nombre_usuario(self, nombre_usuario: str):
+    def _crear_admin_por_defecto(self):
         """
-        Obtener un usuario por nombre de usuario
+        Crea un usuario administrador por defecto si no existe.
+        Email: admin@system.com
+        Contraseña: admin123
         """
-        return (
-            self.db.query(Usuario)
-            .filter(Usuario.nombre_usuario == nombre_usuario.lower().strip())
-            .first()
-        )
+        from auth.security import PasswordManager
+
+        admin = self.obtener_admin_por_defecto()
+        if not admin:
+            contrasena_hash = PasswordManager.hash_password("admin123")
+            self.crear_usuario(
+                nombre="Administrador",
+                email="admin@system.com",
+                contrasena_hash=contrasena_hash,
+                telefono="+573001112233",
+                es_admin=True,
+            )
+            print("✅ Usuario administrador creado: admin@system.com / admin123")
