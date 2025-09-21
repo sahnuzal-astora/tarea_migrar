@@ -1,12 +1,10 @@
-"""
-Operaciones CRUD para Mapa
-"""
+
 
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
-from mapa_categoria import Mapa
-from usuario import Usuario
+from entities.mapa_categoria import Mapa
+from entities.usuario import Usuario
 
 
 class MapaCRUD:

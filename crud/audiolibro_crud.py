@@ -1,8 +1,8 @@
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
-from audiolibro_categoria import Audiolibro
-from usuario import Usuario
+from entities.audiolibro_categoria import Audiolibro
+from entities.usuario import Usuario
 
 
 class AudiolibroCRUD:

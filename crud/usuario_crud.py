@@ -6,13 +6,13 @@ import re
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
-from usuario import Usuario  # Ajusta el import si tu modelo está en otro módulo
+from entities.usuario import Usuario  
 
 
 class UsuarioCRUD:
     def __init__(self, db: Session):
         self.db = db
-        self._crear_admin_por_defecto()  # <-- inicializa el admin al instanciar
+        self._crear_admin_por_defecto()  
 
     def _validar_email(self, email: str) -> bool:
         pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -160,4 +160,4 @@ class UsuarioCRUD:
                 telefono="+573001112233",
                 es_admin=True,
             )
-            print("✅ Usuario administrador creado: admin@system.com / admin123")
+            print(" Usuario administrador creado: admin@system.com / admin123")

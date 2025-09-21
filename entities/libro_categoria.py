@@ -37,6 +37,7 @@ class Libro(Base):
     usuario_crea = relationship(
         "Usuario", foreign_keys=[id_usuario_crea], overlaps="usuario_edita,producto"
     )
+
     usuario_edita = relationship(
         "Usuario", foreign_keys=[id_usuario_edita], overlaps="usuario_crea,producto"
     )

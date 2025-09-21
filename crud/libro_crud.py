@@ -1,12 +1,10 @@
-"""
-Operaciones CRUD para Libro
-"""
+
 
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
-from libro_categoria import Libro
-from usuario import Usuario
+from entities.libro_categoria import Libro
+from entities.usuario import Usuario
 
 
 class LibroCRUD:

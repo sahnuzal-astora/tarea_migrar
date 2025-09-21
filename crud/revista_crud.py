@@ -1,8 +1,8 @@
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
-from revista_categoria import Revista
-from usuario import Usuario
+from entities.revista_categoria import Revista
+from entities.usuario import Usuario
 
 
 class RevistaCRUD:

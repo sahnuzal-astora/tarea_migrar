@@ -6,8 +6,8 @@ from typing import List, Optional
 from uuid import UUID
 
 from sqlalchemy.orm import Session
-from producto import Producto  # Ajusta el import si tu modelo está en otro módulo
-from usuario import Usuario  # Ajusta el import si tu modelo está en otro módulo
+from entities.producto import Producto  
+from entities.usuario import Usuario  
 
 
 class ProductoCRUD:

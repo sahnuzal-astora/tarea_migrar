@@ -1,8 +1,8 @@
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
-from comic_categoria import Comic
-from usuario import Usuario
+from entities.comic_categoria import Comic
+from entities.usuario import Usuario
 
 
 class ComicCRUD:
